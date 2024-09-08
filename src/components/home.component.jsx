@@ -125,6 +125,11 @@ const HomeComponent = () => {
     };
 
     const handleExport = () => {
+        if (!startInvoice) {
+            alert('Please enter a Start Invoice number before exporting.'); // Display alert if startInvoice is empty
+            return;
+        }
+
         const exportData = filteredOrders.filter(order => selectedOrders.has(order.orderId));
         exportToCSV(exportData, startInvoice); // Pass startInvoice instead of 1000
     };
@@ -233,7 +238,7 @@ const HomeComponent = () => {
                         placeholder="Start Invoice" 
                         value={startInvoice} // Use startInvoice state
                         onChange={(e) => setStartInvoice(e.target.value)} // Update startInvoice state
-                        className="form-control"
+                        className={`form-control ${!startInvoice ? 'is-invalid' : ''}`}
                     />
                 </div>
             </div>

@@ -77,7 +77,7 @@ export const exportToCSV = (orders, startingInvoiceNumber) => {
         const service = vendorOrderItemQuantity >= 2 && customerShippingCountryCode === "US" ? 'ShipGlobal First Class' : 'ShipGlobal Direct';
 
         // Increment the invoice number
-        const invoiceNumber = `${parseInt(startingInvoiceNumber) + index}`;
+        const invoiceNumber = `${parseInt(startingInvoiceNumber ?? 1) + index}`;
 
         // Map fields from the order CSV to ShipGlobal format
         return {
