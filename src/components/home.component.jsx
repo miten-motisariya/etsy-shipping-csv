@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";  
 import Papa from 'papaparse';
-import { exportToCSV } from './csvUtils';
+import { exportToShipGlobalCSV } from './csvUtils';
+import { exportToShipRocketCSV } from './exportShipRocket';
 
 const HomeComponent = () => {
     const [orders, setOrders] = useState([]);
@@ -10,6 +11,7 @@ const HomeComponent = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [filters, setFilters] = useState({ country: '', startDate: '', endDate: '' });
     const [startInvoice, setStartInvoice] = useState(''); // Added state for startInvoice
+    const [exportType, setExportType] = useState('');
 
     const applyFiltersAndSearch = useCallback(() => {
         let filteredData = orders;
@@ -67,10 +69,22 @@ const HomeComponent = () => {
             const file = files[0];
             Papa.parse(file, {
                 header: true,
-                dynamicTyping: true,
+                // dynamicTyping: true,
+                dynamicTyping: (field) => {
+                    // Ensure that 'Order ID' and 'Zip Code' are not automatically parsed as numbers
+                    return field !== 'Order ID' && field !== 'Ship Zipcode';
+                },
+                transform: (value, field) => {
+                    // Ensure the 'Ship Zipcode' remains a string
+                    if (field === 'Ship Zipcode') {
+                        return value.toString().padStart(5, '0'); // Make sure the zip code is treated as a 5-character string
+                    }
+                    return value;
+                },
                 complete: (results) => {
                     const rows = results.data;
-                    const selectedColumns = rows.map(row => ({
+                    const validRows = rows.filter(row => Object.values(row).some(value => value !== null && value !== ''));
+                    const selectedColumns = validRows.map(row => ({
                         saleDate: formatDate(row['Sale Date']),
                         orderId: row['Order ID'],
                         firstName: row['First Name'],
@@ -125,13 +139,22 @@ const HomeComponent = () => {
     };
 
     const handleExport = () => {
+
+        if (!exportType) {
+            alert('Please select an export type.');
+            return;
+        }
         if (!startInvoice) {
             alert('Please enter a Start Invoice number before exporting.'); // Display alert if startInvoice is empty
             return;
         }
 
         const exportData = filteredOrders.filter(order => selectedOrders.has(order.orderId));
-        exportToCSV(exportData, startInvoice); // Pass startInvoice instead of 1000
+        if (exportType === 'shipRocket') {
+            exportToShipRocketCSV(exportData, startInvoice);
+        } else if (exportType === 'shipGlobal') {
+            exportToShipGlobalCSV(exportData, startInvoice);
+        }
     };
 
     const handleSort = (key) => {
@@ -183,7 +206,18 @@ const HomeComponent = () => {
                         </div>
                     {/* </div> */}
                 </div>
-                <div className="col-md-6 text-end">
+                <div className="col-md-4 text-end">
+                    <select
+                        className={`form-select ${!exportType ? 'is-invalid' : ''}`}
+                        value={exportType}
+                        onChange={(e) => setExportType(e.target.value)}
+                    >
+                        <option value="">Select Export Type</option>
+                        <option value="shipRocket">Ship Rocket</option>
+                        <option value="shipGlobal">Ship Global</option>
+                    </select>
+                </div>
+                <div className="col-md-4 text-end">
                     <button 
                         onClick={handleExport} 
                         className="btn btn-primary"

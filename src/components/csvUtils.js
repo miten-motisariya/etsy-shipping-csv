@@ -13,7 +13,7 @@ export const formatDate = (date) => {
     return `${d.getFullYear()}-${month}-${day}`;
 };
 
-export const exportToCSV = (orders, startingInvoiceNumber) => {
+export const exportToShipGlobalCSV = (orders, startingInvoiceNumber) => {
     const todayDate = formatDate(new Date()); // Get today's date in the required format
 
     const mappedOrders = orders.map((row, index) => {
