@@ -61,7 +61,7 @@ const HomeComponent = () => {
             }
         });
         setSelectedOrders(updatedSelectedOrders);
-    }, [filteredOrders, selectedOrders]); // Include selectedOrders in dependency array
+    }, [filteredOrders]);
 
     const handleImport = ($event) => {
         const files = $event.target.files;
