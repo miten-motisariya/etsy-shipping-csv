@@ -40,7 +40,7 @@ export const exportToShipRocketCSV = (orders, startingInvoiceNumber) => {
             'Customer First Name': customerFirstName,
             'Customer Last Name': customerLastName,
             'Email': row?.email || 'babubhaimotisariya@gmail.com',
-            'Customer Mobile': row?.mobileNo || '919537177677',
+            'Customer Mobile': row?.mobileNo || '9537177677',
             'Shipping Address Line 1': row?.addressLine1 || '',
             'Shipping Address Line 2': row?.addressLine2 || '',
             'Shipping Address Country': row?.country || '',
