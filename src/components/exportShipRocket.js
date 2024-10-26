@@ -30,6 +30,15 @@ export const exportToShipRocketCSV = (orders, startingInvoiceNumber) => {
         // Increment the invoice number
         const invoiceNumber = `${parseInt(startingInvoiceNumber ?? 1) + index}`;
 
+        // Adjust pincode for USA (limit to 5 characters if it contains a hyphen)
+        let zipCode = row?.zipCode || '';
+        if (row?.country === 'USA' && zipCode.length > 5) {
+            zipCode = zipCode.slice(0, 5);  // Extract first 5 characters of the ZIP code
+        }
+
+        // Adjust selling price for Canada
+        const sellingPrice = row?.country === 'Canada' ? 12 : 17;
+
         // Map fields from the order to ShipRocket CSV format
         return {
             'Order ID': invoiceNumber,
@@ -44,7 +53,7 @@ export const exportToShipRocketCSV = (orders, startingInvoiceNumber) => {
             'Shipping Address Line 1': row?.addressLine1 || '',
             'Shipping Address Line 2': row?.addressLine2 || '',
             'Shipping Address Country': row?.country || '',
-            'Shipping Address Postcode': row?.zipCode || '',
+            'Shipping Address Postcode': zipCode, // Updated ZIP code
             'Shipping Address City': row?.city || '',
             'Shipping Address State': row?.state || 'NA',
             'Master SKU': 'CAP',
@@ -53,7 +62,7 @@ export const exportToShipRocketCSV = (orders, startingInvoiceNumber) => {
             'Product Quantity': row?.noOfItems || '',
             'Tax': 1, // Assuming tax is 0
             'VAT Number': '',
-            'Selling Price(Per Unit Item Inclusive of Tax)': 17, // Fixed value for the price per unit
+            'Selling Price(Per Unit Item Inclusive of Tax)': sellingPrice, // Updated price for Canada
             'Invoice Date': todayDate,  // Invoice date is today
             'Length (cm)': 10,          // Fixed value for length
             'Breadth (cm)': 8,          // Fixed value for breadth
