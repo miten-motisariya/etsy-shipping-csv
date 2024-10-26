@@ -32,7 +32,7 @@ export const exportToShipRocketCSV = (orders, startingInvoiceNumber) => {
 
         // Adjust pincode for USA (limit to 5 characters if it contains a hyphen)
         let zipCode = row?.zipCode || '';
-        if (row?.country === 'USA' && zipCode.length > 5) {
+        if (row?.country === 'United States' && zipCode.length > 5) {
             zipCode = zipCode.slice(0, 5);  // Extract first 5 characters of the ZIP code
         }
 
