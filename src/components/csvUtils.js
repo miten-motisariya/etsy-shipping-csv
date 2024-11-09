@@ -74,7 +74,7 @@ export const exportToShipGlobalCSV = (orders, startingInvoiceNumber) => {
         }
 
         // Determine the service type based on quantity
-        const service = vendorOrderItemQuantity >= 2 && customerShippingCountryCode === "US" ? 'ShipGlobal First Class' : 'ShipGlobal Direct';
+        const service = customerShippingCountryCode === "US" ? 'ShipGlobal First Class' : 'ShipGlobal Direct';
 
         // Increment the invoice number
         const invoiceNumber = `${parseInt(startingInvoiceNumber ?? 1) + index}`;
