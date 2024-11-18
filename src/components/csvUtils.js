@@ -90,7 +90,7 @@ export const exportToShipGlobalCSV = (orders, startingInvoiceNumber) => {
             package_breadth: 8,
             package_height: 2,
             currency_code: currency,
-            csb5_status: 'FALSE',
+            csb5_status: 0,
             customer_shipping_firstname: customerFirstName,
             customer_shipping_lastname: customerLastName,
             customer_shipping_mobile: row?.mobileNo || '919537177677',
